@@ -9,7 +9,7 @@ website:
       - href: index.qmd
         text: Home
       - href: analyses/01-data-explo.qmd
-        text: Exploration des données
+        text: Exploration des données Olinpe 2022-2024
 
 format:
   html:
