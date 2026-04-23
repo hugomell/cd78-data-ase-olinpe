@@ -6,21 +6,12 @@ gh-markdown-preview -p 8000 --markdown-mode README.md
 
 ## Access to the Olinpe data
 
-The data for the years 2022-2024 where sent to us by email direclty from
-Jeremy Blatrix (Atelier de la Donnée).
-The data used for the analysis has been downloaded from an email sent by Mikel
-Redin Hurtado on 01/21/26 and stored in `data/archive/DataRecoded.xlsx`.
+The data for the years 2022-2024 where sent to us via email directly by
+Jeremy Blatrix (Atelier de la Donnée) as Excel spreadsheets (`.xslx` format).
 
-After a quick exploration with `visidata`, I realised that the Excel files sent
-were not anonymised... So I  will remove the columns "NOM", "PRENOM", "JNAIS"
-before importing the data in R.
-
-Conversion using `in2csv` did not work properly (same with visidata, there
-seems to be an encoding problem), but I could convert the data to CSV from
-Libreoffice.
-
-I used `csvcut` to quickly remove columns that allow the identification of an
-individual:
+The `BASE_TOTALE` sheet for each year was converted to CSV format using
+LibreOffice. The code snippet below removes the columns that allow the
+identification of an individual:
 
 ```bash
 # %% Remove columns 'NOM', 'PRENOM', 'JNAIS' for each year
@@ -69,7 +60,7 @@ nix-shell -p R rPackages.rix
 * Get the latest available date for R and Biodonductor releases with
 `rix::available_dates()`.
 
-→ `"2026-03-09`
+→ `2026-04-22`
 
 
 * Execute the cell below to create the `gen-env.R` that will be used to generate
@@ -82,7 +73,7 @@ cat << EOF > .config/rix/gen-env.R
 library(rix)
 
 rix(
-  date = "2026-03-09",
+  date = "2026-04-22",
   r_pkgs = c("here", "tidyverse", "bayesplot", "brms", "posterior"),
   py_conf = list(
       py_version = "3.13"
@@ -120,7 +111,9 @@ EOF
 ```bash
 # %% Create `.config/rix/default.nix`
 
-Rscript gen-env.R
+cd .config/rix
+nix-shell -p R rPackages.rix --command "Rscript gen-env.R"
+cd ../..
 ```
 
 * Use the content in `.config/rix/default.nix` to create the files `flake.nix` and
@@ -134,7 +127,7 @@ cat << EOF > flake.nix
   description = "Reproducible data analysis shell";
 
   inputs = {
-    nixpkgs.url = "https://github.com/rstats-on-nix/nixpkgs/archive/2026-03-09.tar.gz";
+    nixpkgs.url = "https://github.com/rstats-on-nix/nixpkgs/archive/2026-04-22.tar.gz";
   };
 
   outputs = { self, nixpkgs }:
@@ -149,6 +142,7 @@ cat << EOF > flake.nix
 }
 EOF
 
+# Adapted from `.config/rix/default.nix` 
 cat << 'EOF' > shell.nix
 { pkgs ? import <nixpkgs> {} }:
 
