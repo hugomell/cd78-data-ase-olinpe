@@ -13,19 +13,22 @@ gh-markdown-preview -p 8000 --markdown-mode README.md
 # %% Initialise targets pipeline
 
 targets::use_targets()
+
 ```
 
 ```bash
 # Make the `_targets.R` file writable and executable  
 # (not sure why restriction to read-only)
+
 chmod +wx _targets.R
 ```
 
 Visualise pipeline with `targets::tar_visnetwork()`.
 to fix browser opening issue:
 
-```r
-options(browser = "/usr/local/bin/firefox")
+```bash
+echo 'options(browser = "/usr/local/bin/firefox")' > .Rprofile
+
 ```
 
 ### Quarto website
